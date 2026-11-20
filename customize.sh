@@ -8,7 +8,8 @@ ui_print " "
 
 grep -q 'lcd_size=1600x720' /proc/cmdline || abort "Fail! Unsupported display."
 
-ui_print "Installing boot logo, animation and sound..."
+ui_print "Installing matching boot logo, animation and faded music..."
+ui_print "The complete animation plays before leaving the boot screen."
 
 BMP="$MODPATH/logo.bmp"
 BK=/data/adb/cyberspacevii/bootysplash-a67lg2
