@@ -1,7 +1,7 @@
 id=bootysplash_a67lg2
 name=Bootysplash
-version=v0.6
-versionCode=6
+version=v0.6.5
+versionCode=11
 author=CyberspaceVII
 banner=https://cyberspace7.org/assets/ksun/imgs/bootysplash-a67lg2.png
 description=Matching still logo and complete backward/forward/drop animation, slower drop and fade to black, with medium-level Lords of Acid music for the Foxxd A67L Gen 2.

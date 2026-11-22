@@ -8,6 +8,15 @@ ui_print " "
 
 grep -q 'lcd_size=1600x720' /proc/cmdline || abort "Fail! Unsupported display."
 
+current=$(sha256sum /system_ext/lib64/libunisocbootanimation.so | cut -d' ' -f1)
+case "$current" in
+  39322942066577aa56d7119dbd7bfbd0f07e0e5c7965b42be33b8c23905f6a5b|7dc2c9f55fb466b05a50b6c4c098052a4a8187379699be577f6dc3606c28a47f) ;;
+  *) abort "Fail! Boot audio fix requires supported stock firmware (1790133188)." ;;
+esac
+set_perm "$MODPATH/system/system_ext/lib64/libunisocbootanimation.so" 0 0 0644
+set_perm "$MODPATH/boot-audio-volume.jar" 0 0 0644
+set_perm "$MODPATH/post-fs-data.sh" 0 0 0755
+
 ui_print "Installing matching boot logo, animation and faded music..."
 ui_print "The complete animation plays before leaving the boot screen."
 

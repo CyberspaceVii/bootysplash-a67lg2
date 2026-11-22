@@ -14,13 +14,14 @@ def main():
     args=parser.parse_args()
     args.out.mkdir(parents=True,exist_ok=True)
     files=[MODULE/name for name in ['module.prop','customize.sh','uninstall.sh','logo.bmp',
-                                    'README.md','CHANGELOG.md','LICENSE']]
+                                    'README.md','CHANGELOG.md','LICENSE',
+                                    'post-fs-data.sh','boot-audio-volume.jar']]
     files+=sorted(p for p in (MODULE/'system').rglob('*') if p.is_file())
     archive=args.out/'bootysplash-a67lg2.zip'
     with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED) as z:
         for file in files:
             name=str(file.relative_to(MODULE))
-            info=zipfile.ZipInfo(name,date_time=(2026,11,20,0,0,0))
+            info=zipfile.ZipInfo(name,date_time=(2026,11,22,0,0,0))
             info.compress_type=zipfile.ZIP_DEFLATED
             info.external_attr=(0o100755 if file.suffix=='.sh' else 0o100644)<<16
             z.writestr(info,file.read_bytes())

@@ -1,6 +1,6 @@
 # Bootysplash
 
-**[Download bootysplash-a67lg2.zip — v0.6](https://github.com/CyberspaceVii/bootysplash-a67lg2/releases/download/v0.6/bootysplash-a67lg2.zip)**
+**[Download bootysplash-a67lg2.zip — v0.6.5](https://github.com/CyberspaceVii/bootysplash-a67lg2/releases/download/v0.6.5/bootysplash-a67lg2.zip)**
 
 Custom power-on logo, boot animation and Lords of Acid boot music for the
 **Foxxd A67L Gen 2**, using KernelSU Next.
@@ -15,7 +15,7 @@ screen closes.
 
 ## Requirements
 
-- Foxxd A67L Gen 2
+- Foxxd A67L Gen 2, stock build 1790133188
 - Rooted with KernelSU Next
 
 The installer stops without changing anything if either is missing.
@@ -34,7 +34,7 @@ The boot animation and sound are systemless. The power-on logo isn't: the bootlo
 from the `logo` and `fbootlogo` partitions. So the installer backs up the originals to
 `/data/adb/cyberspacevii/bootysplash-a67lg2/` before writing, and uninstalling writes them back.
 
-v0.6 has not yet been boot-tested on the phone.
+Boot music stays audible during startup, then your normal media volume is restored.
 
 ## License
 

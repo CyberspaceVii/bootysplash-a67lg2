@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.5 — 2026-11-22
+
+- Fix splash audio cutting out or becoming inaudible during startup.
+
 ## v0.6 — 2026-11-20
 
 - New matching power-on still and backward/forward/drop animation.

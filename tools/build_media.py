@@ -69,9 +69,9 @@ def main():
     if (video['width'], video['height'], video['r_frame_rate']) != (W, CONTENT_H, '24/1'):
         raise ValueError('Expected approved 720x1280, 24 fps render')
     count = int(video['nb_frames'])
-    duration = count/FPS
-    if float(probe(args.sound)['format']['duration']) >= duration-.75:
-        raise ValueError('Boot sound needs to finish before animation teardown')
+    duration = (count+1)/FPS
+    if float(probe(args.sound)['format']['duration']) < duration:
+        raise ValueError('Boot sound must cover the full animation')
     archive = args.out/'bootanimation.zip'
     with tempfile.TemporaryDirectory(prefix='bootysplash-media-') as tmp:
         tmp = Path(tmp)
@@ -88,7 +88,7 @@ def main():
         # starting pose over four frames without extending the approved timeline.
         for quality in [82, 80, 78, 76]:
             with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_STORED) as z:
-                z.writestr('desc.txt', f'{W} {H} {FPS}\nc 1 0 part0\np 0 0 part1\n')
+                z.writestr('desc.txt', f'{W} {H} {FPS}\nc 1 0 part0\n')
                 for i in range(count):
                     with Image.open(tmp/f'{i+1:04d}.png') as image:
                         canvas = image.convert('RGB')
@@ -100,7 +100,7 @@ def main():
                     z.writestr(f'part0/{i:04d}.'+('png' if i==0 else 'jpg'), data)
                 if canvas.getbbox() is not None:
                     raise ValueError('Approved render must end at full black')
-                z.writestr('part1/0000.jpg', data)
+                z.writestr(f'part0/{count:04d}.jpg', data)
             if archive.stat().st_size < 95_000_000:
                 break
         else:
@@ -113,12 +113,12 @@ def main():
                               ('bootsound.mp3',media/'bootsound.mp3')]:
         shutil.copyfile(args.out/name, destination)
 
-    # Preview the actual packaged frames, retaining the approved audio packets.
+    # Preview the actual packaged frames with the finished boot soundtrack.
     preview = args.out/'bootysplash-preview.mp4'
     process = subprocess.Popen(['ffmpeg','-v','error','-y','-f','rawvideo','-pix_fmt','rgb24',
-        '-s',f'{W}x{CONTENT_H}','-r',str(FPS),'-i','-','-i',str(args.video),
+        '-s',f'{W}x{CONTENT_H}','-r',str(FPS),'-i','-','-i',str(args.sound),
         '-map','0:v:0','-map','1:a:0','-c:v','libx264','-preset','fast','-crf','18',
-        '-pix_fmt','yuv420p','-c:a','copy','-t',str(duration),'-map_metadata','-1',
+        '-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-t',str(duration),'-map_metadata','-1',
         '-movflags','+faststart',str(preview)],stdin=subprocess.PIPE)
     try:
         with zipfile.ZipFile(archive) as z:
@@ -129,8 +129,8 @@ def main():
         process.stdin.close()
     if process.wait():
         raise RuntimeError('Preview encoding failed')
-    manifest = {'version':'v0.6','canvas':[W,H],'content':[W,CONTENT_H],
-                'offset':[0,OFFSET_Y],'fps':FPS,'frames':count,'duration_seconds':duration,
+    manifest = {'version':'v0.6.5','canvas':[W,H],'content':[W,CONTENT_H],
+                'offset':[0,OFFSET_Y],'fps':FPS,'frames':count+1,'duration_seconds':duration,
                 'jpeg_quality':quality,'initial_handoff_frames':4,
                 'inputs':{name:{'file':getattr(args,name).name,'sha256':sha(getattr(args,name))}
                           for name in ['video','still','sound']},
